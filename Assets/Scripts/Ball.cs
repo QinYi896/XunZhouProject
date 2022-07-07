@@ -77,8 +77,10 @@ public class Ball : MonoBehaviour
                 bouncingBall.curprefabList.Remove(collision.transform.parent.gameObject);
                 Destroy(collision.transform.parent.gameObject);
             }
-            else
+            else if (collision.transform.tag == "BlackChild") 
             {
+
+                Debug.Log(collision.transform.tag+":222222222222");
                 ParticleSystem effect = Instantiate(DeathExplosion);
                // effect.transform.localRotation = Quaternion.Euler(-90, 0, 0);
                 effect.transform.position = transform.position;
@@ -112,8 +114,8 @@ public class Ball : MonoBehaviour
                 gaIma.transform.localRotation = Quaternion.Euler(90, rotor, 0);
                 gaIma.transform.position = new Vector3(transform.position.x, collision. transform.position.y + 0.07f, transform.position.z);
 
-                Image image = gaIma.transform.Find("Image").GetComponent<Image>();
-                image.DOFade(0, 1f);
+                //Image image = gaIma.transform.Find("Image").GetComponent<Image>();
+                //image.DOFade(0, 1f);
 
                 Destroy(gaIma.gameObject, 1f);
 

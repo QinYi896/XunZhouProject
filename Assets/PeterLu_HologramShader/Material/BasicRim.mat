@@ -91,4 +91,3 @@ Material:
     - _HoloColor: {r: 1, g: 0.7397322, b: 0, a: 1}
     - _HoloDirection: {r: 1, g: 1, b: 1, a: 0}
     - _RimColor: {r: 0.69803923, g: 0, b: 0.117510065, a: 0.19215687}
-  m_BuildTextureStacks: []

@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public  enum ProduceEnumWays
+{
+    One_way,
+    two_way,
+}
 public class BouncingBall : MonoBehaviour
 {
     [Header("资源")]
@@ -63,13 +68,28 @@ public class BouncingBall : MonoBehaviour
     public float curtimer = 10;
     public float nunber = 1;
     private float   refi=0;
+
+    public ProduceEnumWays enumWay;
+
+    [Header("第二种生成方式")]
+
+    [Tooltip("每个之间的间距Y角度")]
+    public float spacingAngleY;
+    [Tooltip("生成一定的个数后换角度")]
+    public int otherAngleNumber;
+    private int curOtherAngleNumber;
+    [Tooltip("Z轴的角度")]
+    private float curAngle;
+
+
     void Start()
     {
         rig = GetComponent<Rigidbody>();
         ProducePoint = GameObject.Find("ProducePoint");
         curProduceNunbers = 0;
         curWhileChildNumbers = 0;
-
+        curOtherAngleNumber = 0;
+        curAngle = 0;
     }
 
     // Update is called once per frame
@@ -79,12 +99,98 @@ public class BouncingBall : MonoBehaviour
         //c当前场景的数量小余，
         if (curprefabList.Count<10&& curCanprodeuceNunbers< TotalPrefabsNumbers)
         {
-            Produce();
+            switch(enumWay)
+            {
+                case ProduceEnumWays.One_way:
+                    Produce();
+                    break;
+
+                case ProduceEnumWays.two_way:
+                    ProduceWay2();
+                    break;
+            }
+
+          //  Produce();
         }
 
         ProducePointRotor();
     }
-   
+    /// <summary>
+    /// 生成，位置、方向、材质、Tap的赋值
+    /// </summary>
+    private void ProduceWay2()
+
+    {
+        curOtherAngleNumber += 1;
+        if(curOtherAngleNumber>=Random.Range(otherAngleNumber-2, otherAngleNumber+2))
+        {
+            curOtherAngleNumber = 0;
+            curAngle = Random.Range(1, 8) * 45;
+        }
+        else
+        {
+
+            curAngle += spacingAngleY;
+        }
+      
+
+        curProduceNunbers += 1;
+        curCanprodeuceNunbers += 1;
+
+        //生成、位置、方向、赋值父物体
+        curPrefab = Instantiate(totalPrefab);
+        //添加到列表当中
+
+        curprefabList.Add(curPrefab);
+
+        curPrefab.transform.parent = ProducePoint.transform;
+        lastPrefabsPoint = new Vector3(0, addY -= 1, 0);
+        curPrefab.transform.localPosition = lastPrefabsPoint;
+        curPrefab.transform.localRotation = Quaternion.Euler(90, 0, curAngle);
+
+
+        //里面的子物体
+        Transform[] gas = curPrefab.GetComponentsInChildren<Transform>();
+
+
+        //得到该子物体里的白色和黑色物体的个数的概率
+        curTotalWhileChildNumbers = Random.Range(minWhileChildNumbers, maxWhileChildNumbers);
+        //   Debug.Log(curTotalWhileChildNumbers);
+        foreach (Transform child in gas)
+        {
+
+
+            //排除自身
+            if (child.GetComponent<MeshRenderer>())
+            {
+
+
+                //子物体Tap赋值、材质赋值
+                if (Random.Range(1, 8) <= curTotalWhileChildNumbers && curWhileChildNumbers < curTotalWhileChildNumbers)
+                {
+
+                    taterialNumber = Random.Range(0, materialColors.Count - 1);
+                    child.GetComponent<MeshRenderer>().material = materialColors[taterialNumber];
+                    child.tag = "WhileChild";
+                    curWhileChildNumbers += 1;
+
+                }
+                else
+                {
+                    child.GetComponent<MeshRenderer>().material = materialBlack;
+                    child.tag = "BlackChild";
+
+                }
+            }
+
+            if (child == gas[gas.Length - 1])
+            {
+                curWhileChildNumbers = 0;
+            }
+        }
+
+    }
+
 
     /// <summary>
     /// 生成，位置、方向、材质、Tap的赋值
