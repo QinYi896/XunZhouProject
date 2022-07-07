@@ -136,6 +136,7 @@ public class BouncingBall : MonoBehaviour
                 {
                     child.GetComponent<MeshRenderer>().material = materialBlack;
                     child.tag = "BlackChild";
+                    
                 }
             }
 
