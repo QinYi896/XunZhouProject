@@ -26,7 +26,7 @@ public class CamraMove : MonoBehaviour
             distances = camera.transform.localPosition.y - bouncingBall.curprefabList[0].transform.localPosition.y;
 
 
-            camera.transform.DOLocalMoveY(bouncingBall.curprefabList[0].transform.localPosition.y+1.2f,0.3f);
+            camera.transform.DOLocalMoveY(bouncingBall.curprefabList[0].transform.localPosition.y+1.2f,0.4f);
           //  Debug.Log(distances+ ":distances");
         }
     }

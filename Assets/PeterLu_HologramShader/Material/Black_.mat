@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CFX_Demo_Water
+  m_Name: Black_
   m_Shader: {fileID: 4800000, guid: 714e760b98304b44292e04841e05f258, type: 3}
   m_ShaderKeywords: _ _ALPHABLEND_ON _CFXR_DITHERED_SHADOWS_OFF _CFXR_GLOW_POW_P4
     _CFXR_OVERLAYBLEND_RGBA _CFXR_OVERLAYTEX_OFF

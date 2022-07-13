@@ -6,6 +6,7 @@ public  enum ProduceEnumWays
 {
     One_way,
     two_way,
+    Three_way,
 }
 public class BouncingBall : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class BouncingBall : MonoBehaviour
     private GameObject curPrefab;
   //  [HideInInspector]
     public  List<GameObject> curprefabList = new List<GameObject>();
-
+    public GameObject prefabsParent;
 
     [Tooltip("底部的预制体地形")]
     public GameObject wallPrefab;
@@ -32,7 +33,10 @@ public class BouncingBall : MonoBehaviour
     public int TotalPrefabsNumbers;
     private int startProduceNunber = 5;
 
+
+
     [Header("当前生成的预制体个数")]
+
     private int curProduceNunbers;
     private int curCanprodeuceNunbers;
 
@@ -81,7 +85,26 @@ public class BouncingBall : MonoBehaviour
     [Tooltip("Z轴的角度")]
     private float curAngle;
 
+    [Range(1, 6)]
+    private int blackNunber;
 
+
+    [Header("第三种生成方式")]
+    [Tooltip("是否生成模板圆形")]
+    private bool isProduceExampleCircle;
+
+    private GameObject curExampleCircle;
+
+
+
+
+    [Header("缺失部分")]
+    public int min_DelectNuunber;
+    public int Max_DelectNuunber;
+
+    [Tooltip("缺失的概率**分之一")]
+    public int electDelectNuunber;
+   
     void Start()
     {
         rig = GetComponent<Rigidbody>();
@@ -90,6 +113,7 @@ public class BouncingBall : MonoBehaviour
         curWhileChildNumbers = 0;
         curOtherAngleNumber = 0;
         curAngle = 0;
+        isProduceExampleCircle = true;
     }
 
     // Update is called once per frame
@@ -108,6 +132,10 @@ public class BouncingBall : MonoBehaviour
                 case ProduceEnumWays.two_way:
                     ProduceWay2();
                     break;
+
+                case ProduceEnumWays.Three_way:
+                    ProduceWay3();
+                    break;
             }
 
           //  Produce();
@@ -115,6 +143,147 @@ public class BouncingBall : MonoBehaviour
 
         ProducePointRotor();
     }
+
+
+    /// <summary>
+    /// 生成，位置、方向、材质、Tap的赋值
+    /// </summary>
+    private void ProduceWay3()
+    {
+
+
+        //生成模板圆块
+        if(isProduceExampleCircle)
+        {
+            curExampleCircle= Instantiate(totalPrefab);
+           //里面的子物体
+            Transform[] gas = curExampleCircle.GetComponentsInChildren<Transform>();
+
+            //得到该子物体里的白色和黑色物体的个数的概率
+            curTotalWhileChildNumbers = Random.Range(minWhileChildNumbers, maxWhileChildNumbers);
+
+            foreach (Transform child in gas)
+            {
+
+
+                //排除自身
+                if (child.GetComponent<MeshRenderer>())
+                {
+
+                    //子物体Tap赋值、材质赋值
+                    //白色模块的概率，要是白色模块的数量达到数值，剩下的都是黑色模块
+                    if (Random.Range(1, 8) <= curTotalWhileChildNumbers && curWhileChildNumbers < curTotalWhileChildNumbers)
+                    {
+
+                        //颜色的赋值
+                        taterialNumber = Random.Range(0, materialColors.Count - 1);
+                        child.GetComponent<MeshRenderer>().material = materialColors[taterialNumber];
+                        child.tag = "WhileChild";
+                        curWhileChildNumbers += 1;
+
+                    }
+                    else
+                    {
+                        child.GetComponent<MeshRenderer>().material = materialBlack;
+                        child.tag = "BlackChild";
+
+                    }
+
+
+                    ////删除一部分
+                    //int k = Random.Range(0,electDelectNuunber);
+                    //if(k<=1)
+                    //{
+                    //    Destroy(child.gameObject);
+                    //}
+               
+
+                }
+
+                if (child == gas[gas.Length - 1])
+                {
+                    curWhileChildNumbers = 0;
+                }
+            }
+
+
+            isProduceExampleCircle = false;
+        }
+
+
+        //生成 定义的 圆块
+        //生成、位置、方向、赋值父物体
+        curPrefab = Instantiate(curExampleCircle);
+        //添加到列表当中
+        curprefabList.Add(curPrefab);
+
+        curPrefab.transform.parent = ProducePoint.transform;
+        lastPrefabsPoint = new Vector3(0, addY -= 1, 0);
+        curPrefab.transform.localPosition = lastPrefabsPoint;
+        curPrefab.transform.localRotation = Quaternion.Euler(90, 0, curAngle);
+
+
+
+
+
+
+
+
+        curOtherAngleNumber += 1;
+        if (curOtherAngleNumber >= Random.Range(otherAngleNumber - 2, otherAngleNumber + 2))
+        {
+            curOtherAngleNumber = 0;
+            curAngle = Random.Range(1, 8) * 45;
+            //生成到达一定数量的圆块后  换圆块模板
+            isProduceExampleCircle = true;
+        }
+        else
+        {
+
+            curAngle += spacingAngleY;
+        }
+
+        
+        curProduceNunbers += 1;
+        curCanprodeuceNunbers += 1;
+
+
+
+        //删除
+        //删除
+        //删除
+        //删除
+        Transform[] ga = curPrefab.GetComponentsInChildren<Transform>();
+
+        //得到该子物体里的白色和黑色物体的个数的概率
+        curTotalWhileChildNumbers = Random.Range(minWhileChildNumbers, maxWhileChildNumbers);
+        foreach (Transform child in ga)
+        {
+
+
+            //排除自身
+            if (child.GetComponent<MeshRenderer>())
+            {
+                //删除一部分
+                int k = Random.Range(0, electDelectNuunber);
+                if (k <= 1)
+                {
+                    Destroy(child.gameObject);
+                }
+
+
+            }
+
+        }
+
+
+
+
+    }
+
+
+
+
     /// <summary>
     /// 生成，位置、方向、材质、Tap的赋值
     /// </summary>
@@ -271,4 +440,6 @@ public class BouncingBall : MonoBehaviour
         }
         ProducePoint.transform.Rotate(Vector3.up * rotaspeed * nunber);
     }
+
+
 }

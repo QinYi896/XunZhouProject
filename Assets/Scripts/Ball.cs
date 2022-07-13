@@ -14,6 +14,7 @@ public class Ball : MonoBehaviour
     private CamraMove camraMove;
     public ParticleSystem[] downEffect;
     public GameObject[] DownEffectIma;
+    public GameObject[] DeathEffectIma;
     private int randNunber;
 
     public int texNunber=0;
@@ -39,6 +40,7 @@ public class Ball : MonoBehaviour
     void Update()
     {
         ImputFunction();
+        JudgePlayPoint();
     }
     private void LateUpdate()
     {
@@ -58,11 +60,20 @@ public class Ball : MonoBehaviour
             isGetMouseButton = false;
         }
     }
-    private  void OnCollisionExit(Collision collision)
-    {
-        
-    }
 
+    private void JudgePlayPoint()
+    {
+        Debug.Log(bouncingBall);
+
+        if (transform.position.y <= bouncingBall.curprefabList[0].transform.position.y-0.2f)
+        {
+
+            Destroy(bouncingBall.curprefabList[0].gameObject);
+            bouncingBall.curprefabList.Remove(bouncingBall.curprefabList[0]);
+            camraMove.DistanceCalculate();
+        }
+       
+    }
     private void OnCollisionEnter(Collision collision)
     {
         //只是调用一次
@@ -70,19 +81,34 @@ public class Ball : MonoBehaviour
 
         if (isGetMouseButton)
         {
-            rig.velocity = -vector * 2;
+            
             if (collision.transform.tag == "WhileChild")
             {
-            //    hasCollied = false;
+               
+                //    hasCollied = false;
                 bouncingBall.curprefabList.Remove(collision.transform.parent.gameObject);
                 Destroy(collision.transform.parent.gameObject);
+                rig.velocity = -vector * 2;
             }
-            else if (collision.transform.tag == "BlackChild") 
+            //
+            else if (collision.transform.tag == "BlackChild")
             {
+                randNunber = Random.Range(0, 2);
+                //水迹图片
+                //z制作特片的透明度变化
+                GameObject gaIma = Instantiate(DeathEffectIma[randNunber]);
+                int rotor = Random.Range(0, 360);
+                gaIma.transform.parent = bouncingBall.curprefabList[1].transform;
+                gaIma.transform.localRotation = Quaternion.Euler(0, rotor, 0);
+                gaIma.transform.localPosition = new Vector3(transform.localPosition.x, collision.transform.localPosition.y + 0.1f - 1f, transform.localPosition.z);
+                Image image = gaIma.transform.Find("Image").GetComponent<Image>();
+                //  image.DOFade(0, 4f);
+                Destroy(gaIma.gameObject, 4f);
 
-                Debug.Log(collision.transform.tag+":222222222222");
+
+                Debug.Log(collision.transform.tag + ":222222222222");
                 ParticleSystem effect = Instantiate(DeathExplosion);
-               // effect.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+                // effect.transform.localRotation = Quaternion.Euler(-90, 0, 0);
                 effect.transform.position = transform.position;
                 Destroy(effect.gameObject, 2f);
                 Destroy(ball.gameObject);
@@ -107,13 +133,12 @@ public class Ball : MonoBehaviour
                 effect.transform.position = transform.position;
                 Destroy(effect.gameObject, 2f);
 
-                //水迹图片
-                //z制作特片的透明度变化
+             
                 GameObject gaIma = Instantiate(DownEffectIma[randNunber]);
                 int rotor = Random.Range(0, 360);
                 gaIma.transform.localRotation = Quaternion.Euler(90, rotor, 0);
                 gaIma.transform.position = new Vector3(transform.position.x, collision. transform.position.y + 0.07f, transform.position.z);
-
+                
                 //Image image = gaIma.transform.Find("Image").GetComponent<Image>();
                 //image.DOFade(0, 1f);
 
