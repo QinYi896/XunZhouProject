@@ -608,7 +608,11 @@ MonoBehaviour:
   otherAngleNumber: 6
   min_DelectNuunber: 0
   Max_DelectNuunber: 0
-  electDelectNuunber: 14
+  electDelectNuunber: 50
+  isDelect: 1
+  scoreNuunber: 50
+  isScoreProdece: 1
+  scoreMaterial: {fileID: 2100000, guid: 5d7072a3608af2d4c8bdbf7f9ec4655e, type: 2}
 --- !u!4 &908068208
 Transform:
   m_ObjectHideFlags: 0
@@ -1548,7 +1552,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f07d04ff6ffcc7d4ebbf3f3f5e2e8e5d, type: 2}
+  - {fileID: 2100000, guid: 5d7072a3608af2d4c8bdbf7f9ec4655e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

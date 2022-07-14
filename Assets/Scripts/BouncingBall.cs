@@ -102,9 +102,15 @@ public class BouncingBall : MonoBehaviour
     public int min_DelectNuunber;
     public int Max_DelectNuunber;
 
-    [Tooltip("缺失的概率**分之一")]
+    [Header("缺失的概率**分之一")]
     public int electDelectNuunber;
-   
+    public bool isDelect;
+
+
+    [Header("分数块的概率**分之一")]
+    public int scoreNuunber;
+    public bool isScoreProdece;
+    public Material scoreMaterial;
     void Start()
     {
         rig = GetComponent<Rigidbody>();
@@ -120,7 +126,7 @@ public class BouncingBall : MonoBehaviour
     void Update()
     {
         
-        //c当前场景的数量小余，
+        //生成方式
         if (curprefabList.Count<10&& curCanprodeuceNunbers< TotalPrefabsNumbers)
         {
             switch(enumWay)
@@ -190,14 +196,6 @@ public class BouncingBall : MonoBehaviour
                     }
 
 
-                    ////删除一部分
-                    //int k = Random.Range(0,electDelectNuunber);
-                    //if(k<=1)
-                    //{
-                    //    Destroy(child.gameObject);
-                    //}
-               
-
                 }
 
                 if (child == gas[gas.Length - 1])
@@ -266,7 +264,7 @@ public class BouncingBall : MonoBehaviour
             {
                 //删除一部分
                 int k = Random.Range(0, electDelectNuunber);
-                if (k <= 1)
+                if (k <= 1&& isDelect)
                 {
                     Destroy(child.gameObject);
                 }
@@ -274,6 +272,21 @@ public class BouncingBall : MonoBehaviour
 
             }
 
+
+            if (child.GetComponent<MeshRenderer>())
+            {
+                //删除一部分
+                int k = Random.Range(0, electDelectNuunber);
+
+                if (k <= 1 && isScoreProdece)
+                {
+                    child.GetComponent<MeshRenderer>().material =scoreMaterial;
+                    child.tag = "ScoreChild";
+
+                }
+
+
+            }
         }
 
 

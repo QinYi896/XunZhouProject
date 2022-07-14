@@ -8,6 +8,8 @@ TagManager:
   - Circle
   - WhileChild
   - BlackChild
+  - FxTemporaire
+  - ScoreChild
   layers:
   - Default
   - TransparentFX
