@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public  enum ProduceEnumWays
+public enum ProduceEnumWays
 {
     One_way,
     two_way,
@@ -19,8 +19,8 @@ public class BouncingBall : MonoBehaviour
     [Tooltip("生成的预制体")]
     public GameObject totalPrefab;
     private GameObject curPrefab;
-  //  [HideInInspector]
-    public  List<GameObject> curprefabList = new List<GameObject>();
+    //  [HideInInspector]
+    public List<GameObject> curprefabList = new List<GameObject>();
     public GameObject prefabsParent;
 
     [Tooltip("底部的预制体地形")]
@@ -71,7 +71,7 @@ public class BouncingBall : MonoBehaviour
     public float rotottimer;
     public float curtimer = 10;
     public float nunber = 1;
-    private float   refi=0;
+    private float refi = 0;
 
     public ProduceEnumWays enumWay;
 
@@ -111,6 +111,18 @@ public class BouncingBall : MonoBehaviour
     public int scoreNuunber;
     public bool isScoreProdece;
     public Material scoreMaterial;
+
+    [Header("护盾")]
+    public bool isProduceShield;
+    [Range(0, 5)]
+    [Tooltip("总护盾个数")]
+    public int ShieldNumber;
+    [Tooltip("护盾无敌时间")]
+    public float ShieldTimer;
+    public GameObject ShieldPrefab;
+
+    public int k = 0;
+    public List<int> ShieldProduceLayerList ;
     void Start()
     {
         rig = GetComponent<Rigidbody>();
@@ -125,11 +137,11 @@ public class BouncingBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         //生成方式
-        if (curprefabList.Count<10&& curCanprodeuceNunbers< TotalPrefabsNumbers)
+        if (curprefabList.Count < 10 && curCanprodeuceNunbers < TotalPrefabsNumbers)
         {
-            switch(enumWay)
+            switch (enumWay)
             {
                 case ProduceEnumWays.One_way:
                     Produce();
@@ -144,7 +156,7 @@ public class BouncingBall : MonoBehaviour
                     break;
             }
 
-          //  Produce();
+
         }
 
         ProducePointRotor();
@@ -159,10 +171,10 @@ public class BouncingBall : MonoBehaviour
 
 
         //生成模板圆块
-        if(isProduceExampleCircle)
+        if (isProduceExampleCircle)
         {
-            curExampleCircle= Instantiate(totalPrefab);
-           //里面的子物体
+            curExampleCircle = Instantiate(totalPrefab);
+            //里面的子物体
             Transform[] gas = curExampleCircle.GetComponentsInChildren<Transform>();
 
             //得到该子物体里的白色和黑色物体的个数的概率
@@ -222,7 +234,7 @@ public class BouncingBall : MonoBehaviour
 
 
 
-
+        ShieldProduce(curPrefab.transform);
 
 
 
@@ -241,7 +253,7 @@ public class BouncingBall : MonoBehaviour
             curAngle += spacingAngleY;
         }
 
-        
+
         curProduceNunbers += 1;
         curCanprodeuceNunbers += 1;
 
@@ -264,7 +276,7 @@ public class BouncingBall : MonoBehaviour
             {
                 //删除一部分
                 int k = Random.Range(0, electDelectNuunber);
-                if (k <= 1&& isDelect)
+                if (k <= 1 && isDelect)
                 {
                     Destroy(child.gameObject);
                 }
@@ -280,7 +292,7 @@ public class BouncingBall : MonoBehaviour
 
                 if (k <= 1 && isScoreProdece)
                 {
-                    child.GetComponent<MeshRenderer>().material =scoreMaterial;
+                    child.GetComponent<MeshRenderer>().material = scoreMaterial;
                     child.tag = "ScoreChild";
 
                 }
@@ -304,7 +316,7 @@ public class BouncingBall : MonoBehaviour
 
     {
         curOtherAngleNumber += 1;
-        if(curOtherAngleNumber>=Random.Range(otherAngleNumber-2, otherAngleNumber+2))
+        if (curOtherAngleNumber >= Random.Range(otherAngleNumber - 2, otherAngleNumber + 2))
         {
             curOtherAngleNumber = 0;
             curAngle = Random.Range(1, 8) * 45;
@@ -314,7 +326,7 @@ public class BouncingBall : MonoBehaviour
 
             curAngle += spacingAngleY;
         }
-      
+
 
         curProduceNunbers += 1;
         curCanprodeuceNunbers += 1;
@@ -424,7 +436,7 @@ public class BouncingBall : MonoBehaviour
                 {
                     child.GetComponent<MeshRenderer>().material = materialBlack;
                     child.tag = "BlackChild";
-                    
+
                 }
             }
 
@@ -454,5 +466,30 @@ public class BouncingBall : MonoBehaviour
         ProducePoint.transform.Rotate(Vector3.up * rotaspeed * nunber);
     }
 
+    /// <summary>
+    /// 护盾生成
+    /// </summary>
+    /// <param name="tra"></param>
+    private void ShieldProduce(Transform tra)
+    {
+        //Debug.Log(isProduceShield+":" + ShieldProduceLayerList != null);
+        //Debug.Log(ShieldProduceLayerList != null);
+        //Debug.Log(ShieldProduceLayerList[0]);
+        if (isProduceShield && ShieldProduceLayerList != null)
+        {
+            //Debug.Log(ShieldProduceLayerList[0] + ":" + curCanprodeuceNunbers);
+            if (ShieldProduceLayerList[0] == curCanprodeuceNunbers)
+            {
+                Debug.Log(ShieldProduceLayerList[0] + ":" + curCanprodeuceNunbers);
+                Debug.Log(22222);
+                //生成护盾
+                GameObject game = Instantiate(ShieldPrefab);
+                game.transform.parent = tra; 
+               
+                 Vector3 vector = new Vector3(tra.transform.localPosition.x, 0.093f, tra.localPosition.z );
+                game.transform.localPosition = vector;
+            }
+        }
 
+    }
 }

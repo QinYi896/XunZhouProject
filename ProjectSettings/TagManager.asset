@@ -10,6 +10,7 @@ TagManager:
   - BlackChild
   - FxTemporaire
   - ScoreChild
+  - Shield
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - 
   - 11
-  - 
+  - Post
   - 
   - 
   - 

@@ -24,6 +24,10 @@ public class Ball : MonoBehaviour
     //爆炸特效
     public ParticleSystem DeathExplosion;
     // Start is called before the first frame update
+
+    public Score Score;
+
+    public GameObject scoreParent;
     void Start()
     {
         float vy = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * 1.8f));
@@ -63,15 +67,19 @@ public class Ball : MonoBehaviour
 
     private void JudgePlayPoint()
     {
-      //  Debug.Log(bouncingBall);
+        //  Debug.Log(bouncingBall);
 
-        if (transform.position.y <= bouncingBall.curprefabList[0].transform.position.y)
+        if (bouncingBall.curprefabList != null)
         {
-
-            Destroy(bouncingBall.curprefabList[0].gameObject);
-            bouncingBall.curprefabList.Remove(bouncingBall.curprefabList[0]);
-            camraMove.DistanceCalculate();
+            if (transform.position.y <= bouncingBall.curprefabList[0].transform.position.y)
+            {
+                ScoreIn(2);
+                Destroy(bouncingBall.curprefabList[0].gameObject);
+                bouncingBall.curprefabList.Remove(bouncingBall.curprefabList[0]);
+                camraMove.DistanceCalculate();
+            }
         }
+       
        
     }
     private void OnCollisionEnter(Collision collision)
@@ -89,25 +97,34 @@ public class Ball : MonoBehaviour
                 bouncingBall.curprefabList.Remove(collision.transform.parent.gameObject);
                 Destroy(collision.transform.parent.gameObject);
                 rig.velocity = -vector * 2;
+
+                if(collision.transform.tag == "WhileChild")
+                {
+                    ScoreIn(1);
+                }
+                else
+                {
+                    ScoreIn(3);
+                }
+                
             }
             //
             else if (collision.transform.tag == "BlackChild")
             {
-                randNunber = Random.Range(0, 2);
-                //水迹图片
-                //z制作特片的透明度变化
-                GameObject gaIma = Instantiate(DeathEffectIma[randNunber]);
-                int rotor = Random.Range(0, 360);
-                gaIma.transform.parent = bouncingBall.curprefabList[0].transform;
-                gaIma.transform.localRotation = Quaternion.Euler(0, rotor, 0);
+                //randNunber = Random.Range(0, 2);
+                ////水迹图片
+                ////z制作特片的透明度变化
+                //GameObject gaIma = Instantiate(DeathEffectIma[randNunber]);
+                //int rotor = Random.Range(0, 360);
+                //gaIma.transform.parent = bouncingBall.curprefabList[0].transform;
+                //gaIma.transform.localRotation = Quaternion.Euler(0, rotor, 0);
 
-                gaIma.transform.localPosition = new Vector3(0, collision.transform.localPosition.y + 0.1f,-3.9f);
-                Image image = gaIma.transform.Find("Image").GetComponent<Image>();
+                //gaIma.transform.localPosition = new Vector3(0, collision.transform.localPosition.y + 0.1f,-3.9f);
+                //Image image = gaIma.transform.Find("Image").GetComponent<Image>();
                 //  image.DOFade(0, 4f);
                // Destroy(gaIma.gameObject, 4f);
 
 
-                Debug.Log(collision.transform.tag + ":222222222222");
                 ParticleSystem effect = Instantiate(DeathExplosion);
                 // effect.transform.localRotation = Quaternion.Euler(-90, 0, 0);
                 effect.transform.position = transform.position;
@@ -118,14 +135,13 @@ public class Ball : MonoBehaviour
         }
         else
         {
-            if(collision.gameObject!=null)
+            if(collision.gameObject!=null&& collision.transform.tag != "Shield")
 
             {
                 texNunber += 1;
 
                 //随机生成蓝色和黄色的特效和水迹
                 randNunber = Random.Range(0, 2);
-                Debug.Log(randNunber);
                 animator.SetTrigger("OnWall");
 
 
@@ -156,5 +172,18 @@ public class Ball : MonoBehaviour
 
       
       
+    }
+
+
+    private void ScoreIn(int score)
+    {
+        GameObject game = Instantiate(Resources.Load("Prefabs/UI/scoreText") as GameObject);
+
+        game.transform.parent = scoreParent.transform;
+        game.transform.rotation = Quaternion.identity;
+        
+        game.transform.localPosition = new Vector3(Random.Range(-20,10), 600 + Random.Range(-20, 20), Random.Range(-5, 5));
+        Score sc = game.GetComponent<Score>();
+        sc.ScoreShowUI(score);
     }
 }
